@@ -2,7 +2,7 @@ import random
 import datetime
 import os
 import sys
-from flask import Flask, render_template, request, session, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, send_file
 import json
 
 app = Flask(__name__)
@@ -10,7 +10,7 @@ app.secret_key = os.urandom(32)
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    return render_template("latex/full.tex", )
+    return render_template("output_02_01_23_24_42/latexFile.html")
 
 if __name__ == '__main__':
     app.debug = True

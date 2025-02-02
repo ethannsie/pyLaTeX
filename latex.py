@@ -1,16 +1,18 @@
 import numpy as np
 from pylatex import Document, Section, Subsection, Math, TikZ, Axis, Plot, Figure, Matrix, Alignat
 import os
+from pathlib import Path
 from datetime import datetime
 
 if __name__ == '__main__':
     # Define image path and check if it exists
-    image_filename = 'kitten.jpg'  # Update this path as needed
+    image_filename = next(Path('.').rglob('kitten.jpg'), None)
     if not os.path.exists(image_filename):
         raise FileNotFoundError(f"Image file not found: {image_filename}")
+    image_filename = str(image_filename.resolve())
 
     # Get current timestamp for unique filenames
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now().strftime("%m_%d_%H_%M_%S")
 
     # Document geometry options
     geometry_options = {"tmargin": "1cm", "lmargin": "10cm"}
@@ -57,8 +59,9 @@ if __name__ == '__main__':
                 kitten_pic.add_image(image_filename, width='120px')
                 kitten_pic.add_caption("Look it's on its back")
 
-    # Generate PDF with unique filename
-    output_filename = f'full_{timestamp}'
+    output_directory = f"templates/output_{timestamp}"
+    os.makedirs(output_directory)
+    output_filename = os.path.join(output_directory, f'latexFile')
 
     try:
         doc.generate_pdf(output_filename, clean_tex=False)
