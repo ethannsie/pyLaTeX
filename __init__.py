@@ -10,7 +10,7 @@ app.secret_key = os.urandom(32)
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    return render_template("home.html", )
+    return render_template("latex/full.tex", )
 
 if __name__ == '__main__':
     app.debug = True
