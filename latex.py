@@ -3,6 +3,82 @@ from pylatex import Document, Section, Subsection, Math, TikZ, Axis, Plot, Figur
 import os
 from pathlib import Path
 from datetime import datetime
+import fitz  # PyMuPDF
+from PIL import Image
+import os
+
+# Function to convert PDF to images
+def pdf_to_images(pdf_path, output_folder):
+    # Open the PDF file
+    pdf_document = fitz.open(pdf_path)
+
+    # Ensure the output folder exists
+    os.makedirs(output_folder, exist_ok=True)
+
+    # Iterate through each page in the PDF
+    for page_number in range(len(pdf_document)):
+        # Get the page
+        page = pdf_document[page_number]
+
+        # Render the page into a pixmap (image)
+        pixmap = page.get_pixmap()
+
+        # Convert pixmap to PIL Image
+        img = Image.frombytes("RGB", [pixmap.width, pixmap.height], pixmap.samples)
+
+        # Save the image as PNG (or any other format)
+        output_path = os.path.join(output_folder, f"page_{page_number + 1}.png")
+        img.save(output_path, "PNG")
+        os.chmod(output_path, 0o644)
+        print(f"Saved: {output_path}")
+
+
+    print("PDF conversion complete!")
+
+def imageRender(image_folder, output_file):
+    # Get all image files in the folder
+    image_files = [f for f in os.listdir(image_folder) if f.endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+
+    # Generate HTML content
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Image Gallery</title>
+        <style>
+            img {{
+                max-width: 200px;
+                margin: 10px;
+            }}
+            .gallery {{
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }}
+        </style>
+    </head>
+    <body>
+        <h1>Image Gallery</h1>
+        <div class="gallery">
+    """
+
+    for image_file in image_files:
+        html_content += f'        <img src="pdfPages/{image_file}" alt="{image_file}">\n'
+
+    html_content += """
+        </div>
+    </body>
+    </html>
+    """
+
+    # Write the HTML content to a file
+    with open(output_file, "w") as file:
+        file.write(html_content)
+
+    print(f"HTML file generated successfully: {output_file}")
+
 
 if __name__ == '__main__':
     # Define image path and check if it exists
@@ -10,9 +86,11 @@ if __name__ == '__main__':
     if not os.path.exists(image_filename):
         raise FileNotFoundError(f"Image file not found: {image_filename}")
     image_filename = str(image_filename.resolve())
-
+    month_day = datetime.now().strftime("%m_%d")
+    if not os.path.exists("templates/" + month_day):
+        os.mkdir("templates/" + month_day)
     # Get current timestamp for unique filenames
-    timestamp = datetime.now().strftime("%m_%d_%H_%M_%S")
+    timestamp = datetime.now().strftime("%H_%M_%S")
 
     # Document geometry options
     geometry_options = {"tmargin": "1cm", "lmargin": "10cm"}
@@ -59,7 +137,7 @@ if __name__ == '__main__':
                 kitten_pic.add_image(image_filename, width='120px')
                 kitten_pic.add_caption("Look it's on its back")
 
-    output_directory = f"templates/output_{timestamp}"
+    output_directory = f"templates/{month_day}/{timestamp}"
     os.makedirs(output_directory)
     output_filename = os.path.join(output_directory, f'latexFile')
 
@@ -68,3 +146,15 @@ if __name__ == '__main__':
         print(f"PDF generated successfully: {output_filename}.pdf")
     except Exception as e:
         print(f"Error generating PDF: {e}")
+
+    # Input PDF and output folder
+    pdf_path = f"{output_directory}/latexFile.pdf"
+    output_dir = f"{output_directory}/pdfPages"
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Convert PDF to images
+    pdf_to_images(pdf_path, output_dir)
+
+    image_folder = f"{output_directory}/pdfPages"
+    output_file = f"{output_directory}/render_pdf.html"
+    imageRender(image_folder, output_file)
