@@ -1,0 +1,59 @@
+\documentclass{article}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+\usepackage{geometry}%
+\geometry{tmargin=1cm,lmargin=10cm}%
+\usepackage{amsmath}%
+%
+%
+%
+\begin{document}%
+\normalsize%
+\section{The fancy stuff}%
+\label{sec:Thefancystuff}%
+\subsection{Correct matrix equations}%
+\label{subsec:Correctmatrixequations}%
+\[%
+\begin{pmatrix}%
+2&3&4\\%
+0&0&1\\%
+0&0&2%
+\end{pmatrix} \begin{pmatrix}%
+100\\%
+10\\%
+20%
+\end{pmatrix} = \begin{pmatrix}%
+310\\%
+20\\%
+40%
+\end{pmatrix}%
+\]
+
+%
+\subsection{Alignat math environment}%
+\label{subsec:Alignatmathenvironment}%
+\begin{alignat*}{2}%
+\frac{a}{b} &= 0 \\%
+\begin{pmatrix}%
+2&3&4\\%
+0&0&1\\%
+0&0&2%
+\end{pmatrix}%
+\begin{pmatrix}%
+100\\%
+10\\%
+20%
+\end{pmatrix}%
+&=%
+\begin{pmatrix}%
+310\\%
+20\\%
+40%
+\end{pmatrix}%
+\end{alignat*}
+
+%
+\end{document}
