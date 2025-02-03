@@ -1,5 +1,5 @@
 import numpy as np
-from pylatex import Document, Section, Subsection, Math, TikZ, Axis, Plot, Figure, Matrix, Alignat
+from pylatex import Document, Section, Subsection, Math, TikZ, Axis, Plot, Figure, Matrix, Alignat, LongTable, MultiColumn
 import os
 from pylatex.base_classes import Environment
 from pylatex.utils import NoEscape
@@ -89,13 +89,10 @@ def convert_latex_to_html(input_tex_file, output_html_file):
     except FileNotFoundError:
         print("Pandoc is not installed or not found in PATH.")
 
+# LATEX GENERATION -----------------------------------------
+# LATEX GENERATION
+# LATEX GENERATION
 def run():
-    # Define image path and check if it exists
-    image_filename = next(Path('.').rglob('kitten.jpg'), None)
-    if not os.path.exists(image_filename):
-        raise FileNotFoundError(f"Image file not found: {image_filename}")
-    image_filename = str(image_filename.resolve())
-
     # Output directory and filenames
     output_directory = "templates"
     tex_filename = os.path.join(output_directory, "dynamic")
@@ -119,36 +116,32 @@ def run():
             with doc.create(Align()):
                 doc.append(NoEscape(r'\frac{a}{b} &= 0 \\'))
                 doc.append(NoEscape(r'x &= y + z \\'))
+                doc.append(NoEscape(r'x &= 3 + z'))
 
                 # agn.extend([Matrix(M), Matrix(a), '&=', Matrix(M * a)])
 
-        # with doc.create(Subsection('Beautiful graphs')):
-        #     with doc.create(TikZ()):
-        #         plot_options = 'height=4cm, width=6cm, grid=major'
-        #         with doc.create(Axis(options=plot_options)) as plot:
-        #             plot.append(Plot(name='model', func='-x^5 - 242'))
-        #
-        #             coordinates = [
-        #                 (-4.77778, 2027.60977),
-        #                 (-3.55556, 347.84069),
-        #                 (-2.33333, 22.58953),
-        #                 (-1.11111, -493.50066),
-        #                 (0.11111, 46.66082),
-        #                 (1.33333, -205.56286),
-        #                 (2.55556, -341.40638),
-        #                 (3.77778, -1169.24780),
-        #                 (5.00000, -3269.56775),
-        #             ]
-        #
-        #             plot.append(Plot(name='estimate', coordinates=coordinates))
-        #
-        # with doc.create(Subsection('Cute kitten pictures')):
-        #     with doc.create(Figure(position='h!')) as kitten_pic:
-        #         kitten_pic.add_image(image_filename, width='120px')
-        #         kitten_pic.add_caption("Look it's on its back")
+    with doc.create(LongTable("l l l")) as data_table:
+        data_table.add_hline()
+        data_table.add_row(["header 1", "header 2", "header 3"])
+        data_table.add_hline()
+        data_table.end_table_header()
+        data_table.add_hline()
+        data_table.add_row((MultiColumn(3, align="r", data="Continued on Next Page"),))
+        data_table.add_hline()
+        data_table.end_table_footer()
+        data_table.add_hline()
+        data_table.add_row(
+            (MultiColumn(3, align="r", data="Not Continued on Next Page"),)
+        )
+        data_table.add_hline()
+        data_table.end_table_last_footer()
+        row = ["Content1", "9", "Longer String"]
+        for i in range(150):
+            data_table.add_row(row)
 
     try:
         # Generate the LaTeX file instead of PDF
+        doc.generate_pdf(f"{tex_filename}")
         doc.generate_tex(f"{tex_filename}")
         print(f"LaTeX file generated successfully: {tex_filename}")
 
