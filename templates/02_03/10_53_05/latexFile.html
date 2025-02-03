@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>latexFile</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <script src="/usr/share/javascript/katex/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="/usr/share/javascript/katex/katex.min.css" />
+</head>
+<body>
+<h1 id="sec:Thefancystuff">The fancy stuff</h1>
+<h2 id="subsec:Correctmatrixequations">Correct matrix equations</h2>
+<p><span class="math display">%
+\begin{pmatrix}%
+2&amp;3&amp;4\\%
+0&amp;0&amp;1\\%
+0&amp;0&amp;2%
+\end{pmatrix} \begin{pmatrix}%
+100\\%
+10\\%
+20%
+\end{pmatrix} = \begin{pmatrix}%
+310\\%
+20\\%
+40%
+\end{pmatrix}%</span></p>
+<h2 id="subsec:Alignatmathenvironment">Alignat math environment</h2>
+<p><span class="math display">\begin{aligned}
+{2}%
+\frac{a}{b} &amp;= 0 \\%
+\frac{b}{c} &amp;= 0 \\%
+\begin{pmatrix}%
+2&amp;3&amp;4\\%
+0&amp;0&amp;1\\%
+0&amp;0&amp;2%
+\end{pmatrix}%
+\begin{pmatrix}%
+100\\%
+10\\%
+20%
+\end{pmatrix}%
+&amp;=%
+\begin{pmatrix}%
+310\\%
+20\\%
+40%
+\end{pmatrix}%\end{aligned}</span></p>
+<h2 id="subsec:Beautifulgraphs">Beautiful graphs</h2>
+<h2 id="subsec:Cutekittenpictures">Cute kitten pictures</h2>
+<figure>
+<img src="/home/students/odd/2025/esie50/pyLaTeX/images/kitten.jpg" width="120" alt="" /><figcaption>Look it’s on its back</figcaption>
+</figure>
+</body>
+</html>

@@ -86,6 +86,7 @@ if __name__ == '__main__':
     if not os.path.exists(image_filename):
         raise FileNotFoundError(f"Image file not found: {image_filename}")
     image_filename = str(image_filename.resolve())
+
     month_day = datetime.now().strftime("%m_%d")
     if not os.path.exists("templates/" + month_day):
         os.mkdir("templates/" + month_day)

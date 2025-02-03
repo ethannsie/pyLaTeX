@@ -7,14 +7,17 @@ import json
 
 app = Flask(__name__)
 app.secret_key = os.urandom(32)
+file_name = "02_03/10_59_23/"
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    return render_template("02_02/13_31_53/latexFile.html")
+    global file_name
+    return render_template(file_name + "latexFile.html")
 
 @app.route("/pdf", methods=['GET', 'POST'])
 def pdf():
-    return render_template("02_02/13_31_53/render_pdf.html")
+    global file_name
+    return render_template(file_name + "render_pdf.html")
 
 
 if __name__ == '__main__':
