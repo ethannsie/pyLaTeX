@@ -1,11 +1,17 @@
 import numpy as np
 from pylatex import Document, Section, Subsection, Math, TikZ, Axis, Plot, Figure, Matrix, Alignat
 import os
+from pylatex.base_classes import Environment
+from pylatex.utils import NoEscape
 from pathlib import Path
 from datetime import datetime
 import fitz  # PyMuPDF
 from PIL import Image
 import subprocess
+
+class Align(Environment):
+    _latex_name = 'align'
+    packages = [NoEscape(r'\usepackage{amsmath}')]
 
 # Function to convert PDF to images
 def pdf_to_images(pdf_path, output_folder):
@@ -75,6 +81,7 @@ def convert_latex_to_html(input_tex_file, output_html_file):
             "--katex",  # use KaTeX for math rendering
             "-o", output_html_file
         ]
+
         subprocess.run(command, check=True)
         print(f"HTML file generated successfully: {output_html_file}")
     except subprocess.CalledProcessError as e:
@@ -108,11 +115,12 @@ def run():
     with doc.create(Section('The fancy stuff')):
         with doc.create(Subsection('Correct matrix equations')):
             doc.append(Math(data=[Matrix(M), Matrix(a), '=', Matrix(M * a)]))
+        with doc.create(Subsection('Align math environment')):
+            with doc.create(Align()):
+                doc.append(NoEscape(r'\frac{a}{b} &= 0 \\'))
+                doc.append(NoEscape(r'x &= y + z \\'))
 
-        with doc.create(Subsection('Alignat math environment')):
-            with doc.create(Alignat(numbering=False, escape=False)) as agn:
-                agn.append(r'\frac{a}{b} &= 0 \\')
-                agn.extend([Matrix(M), Matrix(a), '&=', Matrix(M * a)])
+                # agn.extend([Matrix(M), Matrix(a), '&=', Matrix(M * a)])
 
         # with doc.create(Subsection('Beautiful graphs')):
         #     with doc.create(TikZ()):
