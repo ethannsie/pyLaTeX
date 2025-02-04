@@ -1,5 +1,5 @@
 import numpy as np
-from pylatex import Document, Section, Subsection, Math, TikZ, Axis, Plot, Figure, Matrix, Alignat, LongTable, MultiColumn, TikZDraw
+from pylatex import Document, Section, Tabularx, Subsection, Math, TikZ, Axis, Plot, Figure, Matrix, Alignat, LongTable, MultiColumn, TikZDraw, Command
 import os
 from pylatex.base_classes import Environment
 from pylatex.utils import NoEscape
@@ -100,10 +100,25 @@ def run():
     html_filename = os.path.join(output_directory, "dynamic")
 
     # Document geometry options
-    geometry_options = {"tmargin": "1cm", "lmargin": "10cm"}
+    geometry_options = {"tmargin": "1cm", "lmargin": "1cm", "rmargin": "1cm", "bmargin": "1cm"}
 
     # Create the LaTeX document and write to dynamic.tex
     doc = Document(geometry_options=geometry_options)
+
+    # Add title and author information
+    doc.preamble.append(NoEscape(r"""
+    \title{TedTalk – TeX and LaTeX}
+    \author{Ethan Sie and Sascha Gordon-Zolov}
+    \date{February 2025}
+    """))
+
+    # Add heading using direct formatting
+    doc.append(NoEscape(r"""
+    \noindent \textbf{\LARGE {LaTeX TED Talk}} \\
+    \noindent \textbf{Ethan Sie, Sascha Gordon-Zolov \\ Mr. Mykolyk \\ Software Development} \hfill \textbf{February 2025}
+    """))
+
+
 
     data = [2,3 ,4 , 2,3 ,4 , 6, 7, 8, 9, 0, 10, 2, 23, 15, 4, 6,3,5 ,4,5 ,6, 34, 3, 654, 7, 456, 3, 45, 754, 3,45 ,45, 345, 345, 345, 6, 7, 8, 9, 0, 10, 2, 23, 2,3 ,4 , 6, 7, 8, 9, 0, 10, 2, 23, 15, 4, 6,3,5 ,4,5 ,6, 34, 3, 654, 7, 456, 3, 45, 754, 3,45 ,45, 345, 345, 345, 15, 4, 6,3,5 ,4,5 ,6, 34, 3, 654, 7, 456, 3, 45, 754, 3,45 ,45, 345, 345, 345]
     print(len(data))
@@ -138,13 +153,14 @@ def run():
     dataToProcess = []
 
     df = pd.read_csv('data/summerOly_athletes.csv')
-    for i in range(10000):
+    for i in range(3000):
         dataRow = df.loc[i]
         dataToProcess.append([dataRow[0], dataRow[1], dataRow[2], dataRow[3], int(dataRow[4]), dataRow[5], dataRow[6], dataRow[7], dataRow[8]])
 
     print(dataToProcess)
 
-    with doc.create(LongTable("l l l l l l l l l")) as data_table:
+    # with doc.create(LongTable("l l l l l l l l l")) as data_table:
+    with doc.create(LongTable("p{1.5cm} p{0.5cm} p{2cm} p{1cm} p{1cm} p{1.5cm} p{1.5cm} p{5cm} p{1.5cm}")) as data_table:
         data_table.add_hline()
         data_table.add_row(["header 1", "header 2", "header 3","header 1", "header 2", "header 3","header 1", "header 2", "header 3"])
         data_table.add_hline()
@@ -173,5 +189,6 @@ def run():
         print(f"{tex_filename}")
         convert_latex_to_html(f"{tex_filename}.tex", f"{html_filename}.html")
 
+        pdf_to_images("templates/dynamic.pdf", "templates/dynamic_pdf")
     except Exception as e:
         print(f"Error generating LaTeX or HTML: {e}")
