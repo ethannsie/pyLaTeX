@@ -1,5 +1,5 @@
 import numpy as np
-from pylatex import Document, Section, Subsection, Math, TikZ, Axis, Plot, Figure, Matrix, Alignat, LongTable, MultiColumn
+from pylatex import Document, Section, Subsection, Math, TikZ, Axis, Plot, Figure, Matrix, Alignat, LongTable, MultiColumn, TikZDraw
 import os
 from pylatex.base_classes import Environment
 from pylatex.utils import NoEscape
@@ -8,6 +8,7 @@ from datetime import datetime
 import fitz  # PyMuPDF
 from PIL import Image
 import subprocess
+import pandas as pd
 
 class Align(Environment):
     _latex_name = 'align'
@@ -104,10 +105,20 @@ def run():
     # Create the LaTeX document and write to dynamic.tex
     doc = Document(geometry_options=geometry_options)
 
-    a = np.array([[100, 10, 20]]).T  # Column vector (3x1)
-    M = np.matrix([[2, 3, 4],
-                   [0, 0, 1],
-                   [0, 0, 2]])         # Matrix (3x3)
+    data = [2,3 ,4 , 2,3 ,4 , 6, 7, 8, 9, 0, 10, 2, 23, 15, 4, 6,3,5 ,4,5 ,6, 34, 3, 654, 7, 456, 3, 45, 754, 3,45 ,45, 345, 345, 345, 6, 7, 8, 9, 0, 10, 2, 23, 2,3 ,4 , 6, 7, 8, 9, 0, 10, 2, 23, 15, 4, 6,3,5 ,4,5 ,6, 34, 3, 654, 7, 456, 3, 45, 754, 3,45 ,45, 345, 345, 345, 15, 4, 6,3,5 ,4,5 ,6, 34, 3, 654, 7, 456, 3, 45, 754, 3,45 ,45, 345, 345, 345]
+    print(len(data))
+
+    a = np.array([[100, 10, 20], [30, 40, 6], [5, 6, 0], [10, 2, 5], [10, 40, 3], [10, 2, 5], [1, 2, 7]]).T  # Column vector (3x1)
+
+    formatList = []
+    for count, element in enumerate(data):
+        if count != 0 and (count+1)%3 == 0:
+            formatList.append([data[count-2], data[count-1], element])
+
+    # M = np.matrix([[2, 3, 4],
+    #                [0, 0, 1],
+    #                [0, 0, 2]])         # Matrix (3x3)
+    M = np.matrix(formatList)
 
     with doc.create(Section('The fancy stuff')):
         with doc.create(Subsection('Correct matrix equations')):
@@ -120,24 +131,37 @@ def run():
 
                 # agn.extend([Matrix(M), Matrix(a), '&=', Matrix(M * a)])
 
-    with doc.create(LongTable("l l l")) as data_table:
+
+    # with doc.create(TikZ()) as tikz:
+    #     tikz.append(TikZDraw(["sin(x)"]))
+
+    dataToProcess = []
+
+    df = pd.read_csv('data/summerOly_athletes.csv')
+    for i in range(10000):
+        dataRow = df.loc[i]
+        dataToProcess.append([dataRow[0], dataRow[1], dataRow[2], dataRow[3], int(dataRow[4]), dataRow[5], dataRow[6], dataRow[7], dataRow[8]])
+
+    print(dataToProcess)
+
+    with doc.create(LongTable("l l l l l l l l l")) as data_table:
         data_table.add_hline()
-        data_table.add_row(["header 1", "header 2", "header 3"])
+        data_table.add_row(["header 1", "header 2", "header 3","header 1", "header 2", "header 3","header 1", "header 2", "header 3"])
         data_table.add_hline()
         data_table.end_table_header()
         data_table.add_hline()
-        data_table.add_row((MultiColumn(3, align="r", data="Continued on Next Page"),))
+        data_table.add_row((MultiColumn(9, align="r", data="Continued on Next Page"),))
         data_table.add_hline()
         data_table.end_table_footer()
         data_table.add_hline()
         data_table.add_row(
-            (MultiColumn(3, align="r", data="Not Continued on Next Page"),)
+            (MultiColumn(9, align="r", data="Not Continued on Next Page"),)
         )
         data_table.add_hline()
         data_table.end_table_last_footer()
         row = ["Content1", "9", "Longer String"]
-        for i in range(150):
-            data_table.add_row(row)
+        for element in dataToProcess:
+            data_table.add_row(element)
 
     try:
         # Generate the LaTeX file instead of PDF
