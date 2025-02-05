@@ -14,6 +14,19 @@ class Align(Environment):
     _latex_name = 'align'
     packages = [NoEscape(r'\usepackage{amsmath}')]
 
+def identityMaker(length):
+    formatList = []
+    for row in range(length):
+        row1 = []
+        for column in range(length):
+            if row == column:
+                row1.append(1)
+            else:
+                row1.append(0)
+        formatList.append(row1)
+    return np.matrix(formatList)
+
+
 # Function to convert PDF to images
 def pdf_to_images(pdf_path, output_folder):
     pdf_document = fitz.open(pdf_path)
@@ -138,6 +151,18 @@ def run():
     with doc.create(Section('The fancy stuff')):
         with doc.create(Subsection('Correct matrix equations')):
             doc.append(Math(data=[Matrix(M), Matrix(a), '=', Matrix(M * a)]))
+            test = np.matrix([[100, -10, 20, -3, 5, 7, 2], [30, 40, 6, 12, -3 ,6, 78], [5, -6, 0, 2, 6, 5, 67], [-10, 2, 5, 123, 6, -657, 3], [10, 40, 3, 1, -5,43 ,75], [10, 2, -5, 234, -346 ,7, 2], [1, 2, 7, 12, -5, 4,7]])
+            tester = np.matrix([[-23, 45, 43, -36, 54, -17, 42], [330, -740, 96, 812, 35 ,-63, 784], [53, 26, 30, -42, 56, 65, -6], [0, -22, 35, 13, 56, 67, -33], [170, 0, 35, -41, 55,-433 ,725], [104, 32, -25, 34, 46 ,76, 24], [14, -23, 67, 182, 59, 47,87]])
+            dimensions = test.shape
+            rows, columns = dimensions
+            identity = identityMaker(columns)
+            doc.append(Math(data=[Matrix(test), Matrix(identity), '=', Matrix(identity), Matrix(test), '=', Matrix(test * identity)]))
+            doc.append(Math(data=[Matrix(tester), Matrix(test), '=', Matrix(tester * test)]))
+            doc.append(Math(data=[Matrix(test), Matrix(tester), '=', Matrix(test * tester)]))
+
+            # identity = identityMaker(rows)
+            # doc.append(Math(data=[Matrix(identity), Matrix(test), '=', Matrix(identity * test)]))
+
         with doc.create(Subsection('Align math environment')):
             with doc.create(Align()):
                 doc.append(NoEscape(r'\frac{a}{b} &= 0 \\'))
@@ -153,11 +178,11 @@ def run():
     dataToProcess = []
 
     df = pd.read_csv('data/summerOly_athletes.csv')
-    for i in range(3000):
+    for i in range(100):
         dataRow = df.loc[i]
         dataToProcess.append([dataRow[0], dataRow[1], dataRow[2], dataRow[3], int(dataRow[4]), dataRow[5], dataRow[6], dataRow[7], dataRow[8]])
 
-    print(dataToProcess)
+    print(identityMaker(4))
 
     # with doc.create(LongTable("l l l l l l l l l")) as data_table:
     with doc.create(LongTable("p{1.5cm} p{0.5cm} p{2cm} p{1cm} p{1cm} p{1.5cm} p{1.5cm} p{5cm} p{1.5cm}")) as data_table:
