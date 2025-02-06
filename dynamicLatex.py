@@ -118,12 +118,12 @@ def run():
     # Create the LaTeX document and write to dynamic.tex
     doc = Document(geometry_options=geometry_options)
 
-    # Add title and author information
-    doc.preamble.append(NoEscape(r"""
-    \title{TedTalk – TeX and LaTeX}
-    \author{Ethan Sie and Sascha Gordon-Zolov}
-    \date{February 2025}
-    """))
+    # # Add title and author information
+    # doc.preamble.append(NoEscape(r"""
+    # \title{TedTalk – TeX and LaTeX}
+    # \author{Ethan Sie and Sascha Gordon-Zolov}
+    # \date{February 2025}
+    # """))
 
     # Add heading using direct formatting
     doc.append(NoEscape(r"""
@@ -157,6 +157,8 @@ def run():
             rows, columns = dimensions
             identity = identityMaker(columns)
             doc.append(Math(data=[Matrix(test), Matrix(identity), '=', Matrix(identity), Matrix(test), '=', Matrix(test * identity)]))
+            # test = np.matrix([[12],[3],[3]])
+            # tester = np.matrix([[7/6,1/3,5/3],[1,0,1],[1/3,-1/3,1/3]])
             doc.append(Math(data=[Matrix(tester), Matrix(test), '=', Matrix(tester * test)]))
             doc.append(Math(data=[Matrix(test), Matrix(tester), '=', Matrix(test * tester)]))
 
